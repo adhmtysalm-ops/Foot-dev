@@ -3,42 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مشغل البث المباشر</title>
+    <title>منصة البث المباشر المتميزة | للمباريات والأحداث</title>
     <style>
+        /* ================= إعدادات التصميم والألوان الرئيسية ================= */
         :root {
-            --primary-color: #e50914;
-            --bg-color: #121212;
-            --surface-color: #1e1e1e;
+            --bg-main: #0b0c10;
+            --bg-card: #1f2833;
+            --primary-neon: #00ffcc; /* لون نيون جذاب */
+            --live-red: #ff3366;
+            --text-white: #ffffff;
+            --text-gray: #c5a059;
+            --text-muted: #86c232;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: white;
-            font-family: sans-serif;
-            margin: 0;
+            background-color: var(--bg-main);
+            color: var(--text-white);
+            overflow-x: hidden;
+        }
+
+        /* ================= الهيدر (شريط التنقل) ================= */
+        header {
+            background: linear-gradient(180deg, rgba(31,40,51,1) 0%, rgba(11,12,16,1) 100%);
+            padding: 15px 6%;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+            border-bottom: 2px solid rgba(0, 255, 204, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        .container {
-            width: 90%;
-            max-width: 900px;
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .video-wrapper {
-            position: relative;
-            padding-bottom: 56.25%; /* نسبة 16:9 */
-            height: 0;
+        .logo-text {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(45deg, #00ffcc, #0077ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-menu a {
+            color: var(--text-white);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: 0.3s ease;
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            color: var(--primary-neon);
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+        }
+
+        .menu-btn {
+            display: none;
+            font-size: 24px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* ================= الهيكل الرئيسي (Main Layout) ================= */
+        .main-wrapper {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 4%;
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 25px;
+        }
+
+        /* ================= قسم مشغل الفيديو ================= */
+        .video-container {
+            background-color: var(--bg-card);
+            border-radius: 16px;
             overflow: hidden;
-            background: #000;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .video-wrapper iframe {
+        .iframe-responsive {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* نسبة 16:9 شاشات عرض عريضة */
+            height: 0;
+            background-color: #000;
+        }
+
+        .iframe-responsive iframe {
             position: absolute;
             top: 0;
             left: 0;
@@ -47,22 +121,323 @@
             border: none;
         }
 
-        h1 { text-align: center; margin-bottom: 20px; }
+        /* تفاصيل البث أسفل الفيديو */
+        .stream-details {
+            padding: 25px;
+        }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .live-tag {
+            background-color: var(--live-red);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .viewers-count {
+            background: rgba(0, 255, 204, 0.1);
+            color: var(--primary-neon);
+            padding: 4px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            border: 1px solid rgba(0, 255, 204, 0.2);
+        }
+
+        .stream-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        /* أزرار التحكم والخيارات */
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: rgba(255,255,255,0.05);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--primary-neon);
+            color: var(--bg-main);
+            border-color: var(--primary-neon);
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+        }
+
+        /* ================= القائمة الجانبية (شات تفاعلي) ================= */
+        .sidebar {
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 140px);
+            min-height: 500px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .sidebar-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chat-message {
+            background: rgba(255,255,255,0.02);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            border-right: 3px solid var(--primary-neon);
+        }
+
+        .chat-user {
+            font-weight: bold;
+            color: var(--primary-neon);
+            margin-bottom: 3px;
+            display: block;
+        }
+
+        .chat-input-area {
+            padding: 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 10px 15px;
+            border-radius: 8px;
+            color: white;
+            outline: none;
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary-neon);
+        }
+
+        .send-btn {
+            background: var(--primary-neon);
+            color: var(--bg-main);
+            border: none;
+            padding: 0 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* ================= شاشات الموبايل والتجاوب (Responsive) ================= */
+        @media (max-width: 992px) {
+            .main-wrapper {
+                grid-template-columns: 1fr; /* تحويل العرض إلى عمود واحد */
+            }
+            .sidebar {
+                height: 400px;
+                min-height: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none; /* إخفاء القائمة في الشاشات الصغيرة وتفعيل الزر */
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--bg-card);
+                padding: 20px;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+                border-bottom: 2px solid var(--primary-neon);
+            }
+            .nav-menu.active {
+                display: flex;
+            }
+            .menu-btn {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>مشاهدة البث المباشر</h1>
-        <div class="video-wrapper">
-            <!-- تم وضع الرابط الجديد هنا -->
-            <iframe 
-                src="https://xyzfoot-dev-vercel-app.goalz.zip/?m=30717&lang=ar&domain_name=test2" 
-                allow="autoplay; encrypted-media" 
-                allowfullscreen>
-            </iframe>
+    <header>
+        <div class="logo-area">
+            <span class="logo-text">LIVE GOAL</span>
         </div>
-    </div>
+        <button class="menu-btn" id="menuToggle">☰</button>
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="#" class="active">الرئيسية</a></li>
+            <li><a href="#">جدول المباريات</a></li>
+            <li><a href="#">سيرفرات إضافية</a></li>
+            <li><a href="#">الدعم الفني</a></li>
+        </ul>
+    </header>
 
+    <main class="main-wrapper">
+        
+        <section class="video-container">
+            <div class="iframe-responsive">
+                <iframe 
+                    src="https://xyzfoot-dev-vercel-app.goalz.zip/?m=30717&lang=ar&domain_name=Test" 
+                    allow="autoplay; encrypted-media; fullscreen" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+            
+            <div class="stream-details">
+                <div class="status-bar">
+                    <span class="live-tag">🔴 مباشر الآن</span>
+                    <span class="viewers-count" id="liveViewers">جاري تحديث عدد المشاهدين...</span>
+                </div>
+                <h1 class="stream-title">البث المباشر للمباراة الحالية بجودة عالية HD وبدون تقطيع</h1>
+                <p style="color: #a0a8b3; font-size: 15px;">مرحباً بكم في منصتنا. إذا واجهت أي تقطيع أثناء المشاهدة، يرجى الضغط على زر "تحديث البث" أو تفقّد سرعة الإنترنت لديك.</p>
+                
+                <div class="control-buttons">
+                    <button class="btn" onclick="location.reload();">🔄 تحديث البث</button>
+                    <button class="btn" onclick="alert('تم نسخ رابط الصفحة لمشاركتها مع أصدقائك!');">🔗 مشاركة البث</button>
+                    <button class="btn" style="border-color: #ff3366; color: #ff3366;" onclick="alert('تم إرسال بلاغ للدعم الفني، سيتم فحص السيرفر فوراً.');">⚠️ إبلاغ عن انقطاع</button>
+                </div>
+            </div>
+        </section>
+
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <span>الدردشة الحية 💬</span>
+                <span style="color: #00ffcc; font-size: 12px;">● متصل</span>
+            </div>
+            
+            <div class="chat-box" id="chatBox">
+                <div class="chat-message">
+                    <span class="chat-user">أحمد علي</span>
+                    البث شغال روعة وبدون أي تقطيع، شكراً لكم!
+                </div>
+                <div class="chat-message">
+                    <span class="chat-user">كريم محمود</span>
+                    الصوت والصورة متطابقين تماماً، جودة ممتازة 👍
+                </div>
+            </div>
+            
+            <div class="chat-input-area">
+                <input type="text" class="chat-input" id="chatInput" placeholder="اكتب رسالتك هنا...">
+                <button class="send-btn" id="sendBtn">إرسال</button>
+            </div>
+        </aside>
+
+    </main>
+
+    <script>
+        // تفعيل قائمة الموبايل عند الضغط على زر الهامبرغر
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+        
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // عداد مشاهدين وهمي يتغير بشكل حيوي
+        const viewersText = document.getElementById('liveViewers');
+        function updateViewers() {
+            const baseViewers = Math.floor(Math.random() * (4850 - 4500 + 1)) + 4500;
+            viewersText.innerText = `👁️ ${baseViewers.toLocaleString()} مشاهد يتابعون الآن`;
+        }
+        updateViewers();
+        setInterval(updateViewers, 4000); // تحديث كل 4 ثوانٍ
+
+        // نظام المحاكاة التلقائية للرسائل في الشات (لإعطاء حيوية للموقع)
+        const chatBox = document.getElementById('chatBox');
+        const mockUsers = ['عمر الخالدي', 'يوسف حسن', 'سارة خالد', 'محمد عبدالله', 'مصطفى العراقي', 'سعيد المري'];
+        const mockTexts = ['يا شباب جودة البث عندكم كام؟', 'الصوت واضح جداً تسلم ايديكم', 'روعة السيرفر مستقر تماماً', 'جووووول!! هجمة خطيرة جداً', 'منورين يا شباب أحلى بث'];
+
+        setInterval(() => {
+            const randomUser = mockUsers[Math.floor(Math.random() * mockUsers.length)];
+            const randomText = mockTexts[Math.floor(Math.random() * mockTexts.length)];
+            
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'chat-message';
+            msgDiv.innerHTML = `<span class="chat-user">${randomUser}</span>${randomText}`;
+            
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight; // النزول التلقائي لأسفل الشات
+
+            // حذف الرسائل القديمة لعدم إثقال المتصفح
+            if(chatBox.children.length > 20) {
+                chatBox.removeChild(chatBox.children[0]);
+            }
+        }, 6000); // إضافة رسالة تلقائية كل 6 ثوانٍ
+
+        // إمكانية إرسال رسالة حقيقية من قِبل المستخدم
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        function sendMessage() {
+            const text = chatInput.value.trim();
+            if(text !== "") {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = 'chat-message';
+                msgDiv.style.borderRightColor = '#0077ff'; // تمييز رسالة المستخدم باللون الأزرق
+                msgDiv.innerHTML = `<span class="chat-user" style="color: #0077ff;">أنت (أنا)</span>${text}`;
+                chatBox.appendChild(msgDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
+                chatInput.value = ""; // تفريغ الخانة
+            }
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') sendMessage();
+        });
+    </script>
 </body>
 </html>
